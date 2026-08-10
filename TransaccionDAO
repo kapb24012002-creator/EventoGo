@@ -1,0 +1,104 @@
+package ec.edu.istg.gestioneventos.dao
+
+import android.content.ContentValues
+import android.content.Context
+import ec.edu.istg.gestioneventos.database.DBHelper
+import ec.edu.istg.gestioneventos.model.Cliente
+import ec.edu.istg.gestioneventos.model.Evento
+import ec.edu.istg.gestioneventos.model.Pago
+
+class TransaccionDAO(context: Context) {
+
+    private val dbHelper = DBHelper(context)
+
+    fun registrarClienteEventoPago(
+        cliente: Cliente,
+        evento: Evento,
+        pago: Pago
+    ): Boolean {
+
+        val db = dbHelper.writableDatabase
+
+        return try {
+
+            db.beginTransaction()
+
+            // 1. INSERTAR CLIENTE
+            val clienteValues = ContentValues().apply {
+                put(DBHelper.COL_ID_USUARIO, cliente.idUsuario)
+                put(DBHelper.COL_NOMBRE_CLIENTE, cliente.nombre)
+                put(DBHelper.COL_CORREO_CLIENTE, cliente.correo)
+                put(DBHelper.COL_TELEFONO_CLIENTE, cliente.telefono)
+                put(DBHelper.COL_DIRECCION_CLIENTE, cliente.direccion)
+                put(DBHelper.COL_TIPO_CLIENTE, cliente.tipoCliente)
+            }
+
+            val idCliente = db.insert(
+                DBHelper.TABLE_CLIENTE,
+                null,
+                clienteValues
+            )
+
+            if (idCliente == -1L) {
+                throw Exception("Error al insertar cliente")
+            }
+
+            // 2. INSERTAR EVENTO
+            val eventoValues = ContentValues().apply {
+                put(DBHelper.COL_ID_USUARIO, evento.idUsuario)
+                put(DBHelper.COL_ID_CLIENTE, idCliente)
+                put(DBHelper.COL_TITULO, evento.titulo)
+                put(DBHelper.COL_DESCRIPCION, evento.descripcion)
+                put(DBHelper.COL_FECHA, evento.fecha)
+                put(DBHelper.COL_HORA, evento.hora)
+                put(DBHelper.COL_LUGAR, evento.lugar)
+                put(DBHelper.COL_CATEGORIA, evento.categoria)
+                put(DBHelper.COL_ESTADO, evento.estado)
+            }
+
+            val idEvento = db.insert(
+                DBHelper.TABLE_EVENTO,
+                null,
+                eventoValues
+            )
+
+            if (idEvento == -1L) {
+                throw Exception("Error al insertar evento")
+            }
+
+            // 3. INSERTAR PAGO
+            val pagoValues = ContentValues().apply {
+                put(DBHelper.COL_PAGO_CLIENTE, idCliente)
+                put(DBHelper.COL_MONTO, pago.monto)
+                put(DBHelper.COL_FECHA_PAGO, pago.fechaPago)
+                put(DBHelper.COL_METODO_PAGO, pago.metodoPago)
+                put(DBHelper.COL_ESTADO_PAGO, pago.estadoPago)
+            }
+
+            val idPago = db.insert(
+                DBHelper.TABLE_PAGO,
+                null,
+                pagoValues
+            )
+
+            if (idPago == -1L) {
+                throw Exception("Error al insertar pago")
+            }
+
+            db.setTransactionSuccessful()
+
+            true
+
+        } catch (e: Exception) {
+
+            e.printStackTrace()
+
+            false
+
+        } finally {
+
+            db.endTransaction()
+            db.close()
+        }
+    }
+}

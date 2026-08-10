@@ -1,0 +1,350 @@
+package ec.edu.istg.gestioneventos.dao
+
+import android.content.ContentValues
+import android.content.Context
+import ec.edu.istg.gestioneventos.database.DBHelper
+import ec.edu.istg.gestioneventos.model.Pago
+
+class PagoDAO(context: Context) {
+
+    private val dbHelper = DBHelper(context)
+
+    // ==========================
+    // INSERTAR PAGO
+    // ==========================
+
+    fun insertar(pago: Pago): Long {
+
+        val db = dbHelper.writableDatabase
+
+        val values = ContentValues().apply {
+
+            put(
+                DBHelper.COL_PAGO_CLIENTE,
+                pago.idCliente
+            )
+
+            put(
+                DBHelper.COL_MONTO,
+                pago.monto
+            )
+
+            put(
+                DBHelper.COL_FECHA_PAGO,
+                pago.fechaPago
+            )
+
+            put(
+                DBHelper.COL_METODO_PAGO,
+                pago.metodoPago
+            )
+
+            put(
+                DBHelper.COL_ESTADO_PAGO,
+                pago.estadoPago
+            )
+        }
+
+        val resultado = db.insert(
+            DBHelper.TABLE_PAGO,
+            null,
+            values
+        )
+
+        db.close()
+
+        return resultado
+    }
+
+
+    // ==========================
+    // OBTENER TODOS LOS PAGOS
+    // ==========================
+
+    fun obtenerTodos(): MutableList<Pago> {
+
+        val lista = mutableListOf<Pago>()
+
+        val db = dbHelper.readableDatabase
+
+        val cursor = db.rawQuery(
+            "SELECT * FROM ${DBHelper.TABLE_PAGO}",
+            null
+        )
+
+        if (cursor.moveToFirst()) {
+
+            do {
+
+                val pago = Pago(
+
+                    idPago = cursor.getInt(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_ID_PAGO
+                        )
+                    ),
+
+                    idCliente = cursor.getInt(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_PAGO_CLIENTE
+                        )
+                    ),
+
+                    monto = cursor.getDouble(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_MONTO
+                        )
+                    ),
+
+                    fechaPago = cursor.getString(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_FECHA_PAGO
+                        )
+                    ),
+
+                    metodoPago = cursor.getString(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_METODO_PAGO
+                        )
+                    ),
+
+                    estadoPago = cursor.getString(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_ESTADO_PAGO
+                        )
+                    )
+                )
+
+                lista.add(pago)
+
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+
+        return lista
+    }
+
+
+    // ==========================
+    // OBTENER PAGO POR ID
+    // ==========================
+
+    fun obtenerPorId(idPago: Int): Pago? {
+
+        val db = dbHelper.readableDatabase
+
+        val cursor = db.rawQuery(
+
+            """
+            SELECT *
+            FROM ${DBHelper.TABLE_PAGO}
+            WHERE ${DBHelper.COL_ID_PAGO}=?
+            """.trimIndent(),
+
+            arrayOf(idPago.toString())
+        )
+
+        var pago: Pago? = null
+
+        if (cursor.moveToFirst()) {
+
+            pago = Pago(
+
+                idPago = cursor.getInt(
+                    cursor.getColumnIndexOrThrow(
+                        DBHelper.COL_ID_PAGO
+                    )
+                ),
+
+                idCliente = cursor.getInt(
+                    cursor.getColumnIndexOrThrow(
+                        DBHelper.COL_PAGO_CLIENTE
+                    )
+                ),
+
+                monto = cursor.getDouble(
+                    cursor.getColumnIndexOrThrow(
+                        DBHelper.COL_MONTO
+                    )
+                ),
+
+                fechaPago = cursor.getString(
+                    cursor.getColumnIndexOrThrow(
+                        DBHelper.COL_FECHA_PAGO
+                    )
+                ),
+
+                metodoPago = cursor.getString(
+                    cursor.getColumnIndexOrThrow(
+                        DBHelper.COL_METODO_PAGO
+                    )
+                ),
+
+                estadoPago = cursor.getString(
+                    cursor.getColumnIndexOrThrow(
+                        DBHelper.COL_ESTADO_PAGO
+                    )
+                )
+            )
+        }
+
+        cursor.close()
+        db.close()
+
+        return pago
+    }
+
+
+    // ==========================
+    // OBTENER PAGOS POR CLIENTE
+    // ==========================
+
+    fun obtenerPorCliente(idCliente: Int): MutableList<Pago> {
+
+        val lista = mutableListOf<Pago>()
+
+        val db = dbHelper.readableDatabase
+
+        val cursor = db.rawQuery(
+
+            """
+            SELECT *
+            FROM ${DBHelper.TABLE_PAGO}
+            WHERE ${DBHelper.COL_PAGO_CLIENTE}=?
+            """.trimIndent(),
+
+            arrayOf(idCliente.toString())
+        )
+
+        if (cursor.moveToFirst()) {
+
+            do {
+
+                val pago = Pago(
+
+                    idPago = cursor.getInt(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_ID_PAGO
+                        )
+                    ),
+
+                    idCliente = cursor.getInt(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_PAGO_CLIENTE
+                        )
+                    ),
+
+                    monto = cursor.getDouble(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_MONTO
+                        )
+                    ),
+
+                    fechaPago = cursor.getString(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_FECHA_PAGO
+                        )
+                    ),
+
+                    metodoPago = cursor.getString(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_METODO_PAGO
+                        )
+                    ),
+
+                    estadoPago = cursor.getString(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_ESTADO_PAGO
+                        )
+                    )
+                )
+
+                lista.add(pago)
+
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+
+        return lista
+    }
+
+
+    // ==========================
+    // ACTUALIZAR PAGO
+    // ==========================
+
+    fun actualizar(pago: Pago): Int {
+
+        val db = dbHelper.writableDatabase
+
+        val values = ContentValues().apply {
+
+            put(
+                DBHelper.COL_PAGO_CLIENTE,
+                pago.idCliente
+            )
+
+            put(
+                DBHelper.COL_MONTO,
+                pago.monto
+            )
+
+            put(
+                DBHelper.COL_FECHA_PAGO,
+                pago.fechaPago
+            )
+
+            put(
+                DBHelper.COL_METODO_PAGO,
+                pago.metodoPago
+            )
+
+            put(
+                DBHelper.COL_ESTADO_PAGO,
+                pago.estadoPago
+            )
+        }
+
+        val resultado = db.update(
+
+            DBHelper.TABLE_PAGO,
+
+            values,
+
+            "${DBHelper.COL_ID_PAGO}=?",
+
+            arrayOf(pago.idPago.toString())
+        )
+
+        db.close()
+
+        return resultado
+    }
+
+
+    // ==========================
+    // ELIMINAR PAGO
+    // ==========================
+
+    fun eliminar(idPago: Int): Int {
+
+        val db = dbHelper.writableDatabase
+
+        val resultado = db.delete(
+
+            DBHelper.TABLE_PAGO,
+
+            "${DBHelper.COL_ID_PAGO}=?",
+
+            arrayOf(idPago.toString())
+        )
+
+        db.close()
+
+        return resultado
+    }
+}

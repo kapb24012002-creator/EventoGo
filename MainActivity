@@ -1,0 +1,398 @@
+package ec.edu.istg.gestioneventos
+
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import ec.edu.istg.gestioneventos.dao.TransaccionDAO
+import ec.edu.istg.gestioneventos.dao.UsuarioDAO
+import ec.edu.istg.gestioneventos.model.Cliente
+import ec.edu.istg.gestioneventos.model.Evento
+import ec.edu.istg.gestioneventos.model.Pago
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var usuarioDAO: UsuarioDAO
+    private lateinit var transaccionDAO: TransaccionDAO
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+        super.onCreate(savedInstanceState)
+
+        enableEdgeToEdge()
+
+        setContentView(R.layout.activity_main)
+
+        ViewCompat.setOnApplyWindowInsetsListener(
+            findViewById(R.id.main)
+        ) { v, insets ->
+
+            val systemBars =
+                insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars()
+                )
+
+            v.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                systemBars.bottom
+            )
+
+            insets
+        }
+
+        // ==========================
+        // INICIALIZAR DAO
+        // ==========================
+
+        usuarioDAO = UsuarioDAO(this)
+
+        transaccionDAO = TransaccionDAO(this)
+
+
+        // ==========================
+        // REFERENCIAS DEL XML
+        // ==========================
+
+        val edtNombre =
+            findViewById<EditText>(R.id.edtNombre)
+
+        val edtCorreo =
+            findViewById<EditText>(R.id.edtCorreo)
+
+        val edtTelefono =
+            findViewById<EditText>(R.id.edtTelefono)
+
+        val edtDireccion =
+            findViewById<EditText>(R.id.edtDireccion)
+
+        val edtTipoCliente =
+            findViewById<EditText>(R.id.edtTipoCliente)
+
+        val btnRegistrarCliente =
+            findViewById<Button>(R.id.btnRegistrarCliente)
+
+        val txtResultado =
+            findViewById<TextView>(R.id.txtResultado)
+
+
+        // ==========================
+        // BOTÓN REGISTRAR
+        // ==========================
+
+        btnRegistrarCliente.setOnClickListener {
+
+            val nombre =
+                edtNombre.text.toString().trim()
+
+            val correo =
+                edtCorreo.text.toString().trim()
+
+            val telefono =
+                edtTelefono.text.toString().trim()
+
+            val direccion =
+                edtDireccion.text.toString().trim()
+
+            val tipoCliente =
+                edtTipoCliente.text.toString().trim()
+
+
+            // ==========================
+            // VALIDACIÓN
+            // ==========================
+
+            if (
+                nombre.isEmpty() ||
+                correo.isEmpty() ||
+                telefono.isEmpty() ||
+                direccion.isEmpty() ||
+                tipoCliente.isEmpty()
+            ) {
+
+                Toast.makeText(
+                    this,
+                    "Complete todos los campos",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }
+
+
+            try {
+
+                // ==========================
+                // BUSCAR USUARIO
+                // ==========================
+
+                val correoUsuario =
+                    "admin@eventos.com"
+
+                var usuario =
+                    usuarioDAO.buscarPorCorreo(
+                        correoUsuario
+                    )
+
+
+                // ==========================
+                // CREAR USUARIO SI NO EXISTE
+                // ==========================
+
+                if (usuario == null) {
+
+                    val nuevoUsuario =
+                        ec.edu.istg.gestioneventos.model.Usuario(
+
+                            nombres = "Administrador",
+
+                            correo = correoUsuario,
+
+                            password = "123456",
+
+                            telefono = "0999999999",
+
+                            fechaRegistro = ""
+                        )
+
+
+                    val idUsuario =
+                        usuarioDAO.insertar(
+                            nuevoUsuario
+                        )
+
+
+                    if (idUsuario == -1L) {
+
+                        Toast.makeText(
+                            this,
+                            "No se pudo crear el usuario",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        return@setOnClickListener
+                    }
+
+
+                    usuario =
+                        usuarioDAO.buscarPorCorreo(
+                            correoUsuario
+                        )
+                }
+
+
+                // ==========================
+                // VERIFICAR USUARIO
+                // ==========================
+
+                if (usuario == null) {
+
+                    Toast.makeText(
+                        this,
+                        "No se encontró el usuario",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    return@setOnClickListener
+                }
+
+
+                // ==========================
+                // CREAR CLIENTE
+                // ==========================
+
+                val cliente =
+                    Cliente(
+
+                        idUsuario =
+                            usuario.idUsuario,
+
+                        nombre =
+                            nombre,
+
+                        correo =
+                            correo,
+
+                        telefono =
+                            telefono,
+
+                        direccion =
+                            direccion,
+
+                        tipoCliente =
+                            tipoCliente
+                    )
+
+
+                // ==========================
+                // CREAR EVENTO
+                // ==========================
+
+                val evento =
+                    Evento(
+
+                        idUsuario =
+                            usuario.idUsuario,
+
+                        idCliente = 0,
+
+                        titulo =
+                            "Evento de prueba",
+
+                        descripcion =
+                            "Evento registrado mediante transacción",
+
+                        fecha =
+                            "2026-08-09",
+
+                        hora =
+                            "18:00",
+
+                        lugar =
+                            "Guayaquil",
+
+                        categoria =
+                            "General",
+
+                        estado =
+                            "Pendiente"
+                    )
+
+
+                // ==========================
+                // CREAR PAGO
+                // ==========================
+
+                val pago =
+                    Pago(
+
+                        idCliente = 0,
+
+                        monto =
+                            50.00,
+
+                        fechaPago =
+                            "2026-08-09",
+
+                        metodoPago =
+                            "Efectivo",
+
+                        estadoPago =
+                            "Pendiente"
+                    )
+
+
+                // ==========================
+                // EJECUTAR TRANSACCIÓN
+                // CLIENTE + EVENTO + PAGO
+                // ==========================
+
+                val resultado =
+                    transaccionDAO.registrarClienteEventoPago(
+                        cliente,
+                        evento,
+                        pago
+                    )
+
+
+                // ==========================
+                // RESULTADO
+                // ==========================
+
+                if (resultado) {
+
+                    txtResultado.text =
+                        """
+                        TRANSACCIÓN REALIZADA CORRECTAMENTE
+                        
+                        CLIENTE
+                        ID Usuario: ${usuario.idUsuario}
+                        Nombre: $nombre
+                        Correo: $correo
+                        Teléfono: $telefono
+                        Dirección: $direccion
+                        Tipo: $tipoCliente
+                        
+                        EVENTO
+                        Título: ${evento.titulo}
+                        Descripción: ${evento.descripcion}
+                        Fecha: ${evento.fecha}
+                        Hora: ${evento.hora}
+                        Lugar: ${evento.lugar}
+                        Categoría: ${evento.categoria}
+                        Estado: ${evento.estado}
+                        
+                        PAGO
+                        Monto: $${pago.monto}
+                        Fecha: ${pago.fechaPago}
+                        Método: ${pago.metodoPago}
+                        Estado: ${pago.estadoPago}
+                        """.trimIndent()
+
+
+                    Toast.makeText(
+                        this,
+                        "Cliente + Evento + Pago registrados correctamente",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+
+                    // ==========================
+                    // LIMPIAR FORMULARIO
+                    // ==========================
+
+                    edtNombre.text.clear()
+
+                    edtCorreo.text.clear()
+
+                    edtTelefono.text.clear()
+
+                    edtDireccion.text.clear()
+
+                    edtTipoCliente.text.clear()
+
+                } else {
+
+                    txtResultado.text =
+                        """
+                        ERROR EN LA TRANSACCIÓN
+                        
+                        No se pudo completar el registro.
+                        
+                        La transacción fue cancelada.
+                        """.trimIndent()
+
+
+                    Toast.makeText(
+                        this,
+                        "La transacción no se pudo completar",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+
+            } catch (e: Exception) {
+
+                txtResultado.text =
+                    """
+                    ERROR AL REGISTRAR
+                    
+                    ${e.message}
+                    """.trimIndent()
+
+
+                Toast.makeText(
+                    this,
+                    "Error: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+}

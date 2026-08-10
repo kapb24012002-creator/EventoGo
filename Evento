@@ -1,0 +1,28 @@
+package ec.edu.istg.gestioneventos.model
+
+
+data class Evento(
+
+    var idEvento: Int = 0,
+
+    // Usuario que crea el evento
+    var idUsuario: Int,
+
+    // Cliente que contrata el evento
+    var idCliente: Int,
+
+    var titulo: String,
+
+    var descripcion: String,
+
+    var fecha: String,
+
+    var hora: String,
+
+    var lugar: String,
+
+    var categoria: String,
+
+    var estado: String
+
+)

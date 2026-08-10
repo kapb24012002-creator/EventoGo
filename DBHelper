@@ -1,0 +1,411 @@
+package ec.edu.istg.gestioneventos.database
+
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+
+
+class DBHelper(context: Context) : SQLiteOpenHelper(
+    context,
+    DATABASE_NAME,
+    null,
+    DATABASE_VERSION
+) {
+
+
+    companion object {
+
+
+        const val DATABASE_NAME = "gestion_eventos.db"
+
+        const val DATABASE_VERSION = 7
+
+
+
+        // ==========================
+        // TABLA USUARIO
+        // ==========================
+
+        const val TABLE_USUARIO = "Usuario"
+
+        const val COL_ID_USUARIO = "idUsuario"
+
+        const val COL_NOMBRES = "nombres"
+
+        const val COL_CORREO = "correo"
+
+        const val COL_PASSWORD = "password"
+
+        const val COL_TELEFONO = "telefono"
+
+        const val COL_FECHA_REGISTRO = "fechaRegistro"
+
+
+
+        // ==========================
+        // TABLA CLIENTE
+        // ==========================
+
+        const val TABLE_CLIENTE = "Cliente"
+
+        const val COL_ID_CLIENTE = "idCliente"
+
+        const val COL_NOMBRE_CLIENTE = "nombre"
+
+        const val COL_CORREO_CLIENTE = "correo"
+
+        const val COL_TELEFONO_CLIENTE = "telefono"
+
+        const val COL_DIRECCION_CLIENTE = "direccion"
+
+        const val COL_TIPO_CLIENTE = "tipoCliente"
+
+
+
+        // ==========================
+        // TABLA PROVEEDOR
+        // ==========================
+
+        const val TABLE_PROVEEDOR = "Proveedor"
+
+        const val COL_ID_PROVEEDOR = "idProveedor"
+
+        const val COL_NOMBRE_PROVEEDOR = "nombre"
+
+        const val COL_CORREO_PROVEEDOR = "correo"
+
+        const val COL_TELEFONO_PROVEEDOR = "telefono"
+
+        const val COL_DIRECCION_PROVEEDOR = "direccion"
+
+        const val COL_SERVICIO = "servicio"
+
+
+
+        // ==========================
+        // TABLA EVENTO
+        // ==========================
+
+        const val TABLE_EVENTO = "Evento"
+
+        const val COL_ID_EVENTO = "idEvento"
+
+        const val COL_TITULO = "titulo"
+
+        const val COL_DESCRIPCION = "descripcion"
+
+        const val COL_FECHA = "fecha"
+
+        const val COL_HORA = "hora"
+
+        const val COL_LUGAR = "lugar"
+
+        const val COL_CATEGORIA = "categoria"
+
+        const val COL_ESTADO = "estado"
+
+
+
+        // ==========================
+        // TABLA EVENTO_PROVEEDOR
+        // ==========================
+
+        const val TABLE_EVENTO_PROVEEDOR = "Evento_Proveedor"
+
+        const val COL_ID_EVENTO_PROVEEDOR = "idEventoProveedor"
+
+        const val COL_EP_EVENTO = "idEvento"
+
+        const val COL_EP_PROVEEDOR = "idProveedor"
+
+
+
+        // ==========================
+        // TABLA PAGO
+        // ==========================
+
+        const val TABLE_PAGO = "Pago"
+
+        const val COL_ID_PAGO = "idPago"
+
+        const val COL_PAGO_CLIENTE = "idCliente"
+
+        const val COL_MONTO = "monto"
+
+        const val COL_FECHA_PAGO = "fechaPago"
+
+        const val COL_METODO_PAGO = "metodoPago"
+
+        const val COL_ESTADO_PAGO = "estadoPago"
+
+
+    }
+    override fun onConfigure(db: SQLiteDatabase) {
+
+        super.onConfigure(db)
+
+        db.setForeignKeyConstraintsEnabled(true)
+
+    }
+
+
+
+    override fun onCreate(db: SQLiteDatabase) {
+
+
+        // ==========================
+        // USUARIO
+        // ==========================
+
+        db.execSQL(
+            """
+            CREATE TABLE $TABLE_USUARIO(
+
+                $COL_ID_USUARIO INTEGER PRIMARY KEY AUTOINCREMENT,
+
+                $COL_NOMBRES TEXT NOT NULL,
+
+                $COL_CORREO TEXT NOT NULL UNIQUE,
+
+                $COL_PASSWORD TEXT NOT NULL,
+
+                $COL_TELEFONO TEXT,
+
+                $COL_FECHA_REGISTRO TEXT DEFAULT(datetime('now','localtime'))
+
+            )
+            """.trimIndent()
+        )
+
+
+
+        // ==========================
+        // CLIENTE
+        // ==========================
+
+        db.execSQL(
+            """
+            CREATE TABLE $TABLE_CLIENTE(
+
+                $COL_ID_CLIENTE INTEGER PRIMARY KEY AUTOINCREMENT,
+
+                $COL_ID_USUARIO INTEGER NOT NULL,
+
+                $COL_NOMBRE_CLIENTE TEXT NOT NULL,
+
+                $COL_CORREO_CLIENTE TEXT,
+
+                $COL_TELEFONO_CLIENTE TEXT,
+
+                $COL_DIRECCION_CLIENTE TEXT,
+
+                $COL_TIPO_CLIENTE TEXT DEFAULT 'Frecuente',
+
+
+                FOREIGN KEY($COL_ID_USUARIO)
+
+                REFERENCES $TABLE_USUARIO($COL_ID_USUARIO)
+
+                ON DELETE CASCADE
+
+            )
+            """.trimIndent()
+        )
+
+
+
+        // ==========================
+        // PROVEEDOR
+        // ==========================
+
+        db.execSQL(
+            """
+            CREATE TABLE $TABLE_PROVEEDOR(
+
+                $COL_ID_PROVEEDOR INTEGER PRIMARY KEY AUTOINCREMENT,
+
+                $COL_ID_USUARIO INTEGER NOT NULL,
+
+                $COL_NOMBRE_PROVEEDOR TEXT NOT NULL,
+
+                $COL_CORREO_PROVEEDOR TEXT,
+
+                $COL_TELEFONO_PROVEEDOR TEXT,
+
+                $COL_DIRECCION_PROVEEDOR TEXT,
+
+                $COL_SERVICIO TEXT NOT NULL,
+
+
+                FOREIGN KEY($COL_ID_USUARIO)
+
+                REFERENCES $TABLE_USUARIO($COL_ID_USUARIO)
+
+                ON DELETE CASCADE
+
+            )
+            """.trimIndent()
+        )
+
+
+
+        // ==========================
+        // EVENTO
+        // ==========================
+
+        db.execSQL(
+            """
+            CREATE TABLE $TABLE_EVENTO(
+
+                $COL_ID_EVENTO INTEGER PRIMARY KEY AUTOINCREMENT,
+
+                $COL_ID_USUARIO INTEGER NOT NULL,
+
+                $COL_ID_CLIENTE INTEGER NOT NULL,
+
+                $COL_TITULO TEXT NOT NULL,
+
+                $COL_DESCRIPCION TEXT,
+
+                $COL_FECHA TEXT NOT NULL,
+
+                $COL_HORA TEXT NOT NULL,
+
+                $COL_LUGAR TEXT NOT NULL,
+
+                $COL_CATEGORIA TEXT DEFAULT 'General',
+
+                $COL_ESTADO TEXT DEFAULT 'Pendiente',
+
+
+                FOREIGN KEY($COL_ID_USUARIO)
+
+                REFERENCES $TABLE_USUARIO($COL_ID_USUARIO)
+
+                ON DELETE CASCADE,
+
+
+                FOREIGN KEY($COL_ID_CLIENTE)
+
+                REFERENCES $TABLE_CLIENTE($COL_ID_CLIENTE)
+
+                ON DELETE RESTRICT
+
+            )
+            """.trimIndent()
+        )
+
+
+
+        // ==========================
+        // EVENTO_PROVEEDOR
+        // ==========================
+
+        db.execSQL(
+            """
+            CREATE TABLE $TABLE_EVENTO_PROVEEDOR(
+
+                $COL_ID_EVENTO_PROVEEDOR INTEGER PRIMARY KEY AUTOINCREMENT,
+
+                $COL_EP_EVENTO INTEGER NOT NULL,
+
+                $COL_EP_PROVEEDOR INTEGER NOT NULL,
+
+
+                FOREIGN KEY($COL_EP_EVENTO)
+
+                REFERENCES $TABLE_EVENTO($COL_ID_EVENTO)
+
+                ON DELETE CASCADE,
+
+
+                FOREIGN KEY($COL_EP_PROVEEDOR)
+
+                REFERENCES $TABLE_PROVEEDOR($COL_ID_PROVEEDOR)
+
+                ON DELETE CASCADE
+
+            )
+            """.trimIndent()
+        )
+
+
+
+        // ==========================
+        // PAGO
+        // ==========================
+
+        db.execSQL(
+            """
+            CREATE TABLE $TABLE_PAGO(
+
+                $COL_ID_PAGO INTEGER PRIMARY KEY AUTOINCREMENT,
+
+                $COL_PAGO_CLIENTE INTEGER NOT NULL,
+
+                $COL_MONTO REAL NOT NULL,
+
+                $COL_FECHA_PAGO TEXT NOT NULL,
+
+                $COL_METODO_PAGO TEXT NOT NULL,
+
+                $COL_ESTADO_PAGO TEXT DEFAULT 'Pendiente',
+
+
+                FOREIGN KEY($COL_PAGO_CLIENTE)
+
+                REFERENCES $TABLE_CLIENTE($COL_ID_CLIENTE)
+
+                ON DELETE CASCADE
+
+            )
+            """.trimIndent()
+        )
+
+    }
+
+
+
+
+    override fun onUpgrade(
+        db: SQLiteDatabase,
+        oldVersion: Int,
+        newVersion: Int
+    ) {
+
+
+        db.execSQL(
+            "DROP TABLE IF EXISTS $TABLE_PAGO"
+        )
+
+
+        db.execSQL(
+            "DROP TABLE IF EXISTS $TABLE_EVENTO_PROVEEDOR"
+        )
+
+
+        db.execSQL(
+            "DROP TABLE IF EXISTS $TABLE_EVENTO"
+        )
+
+
+        db.execSQL(
+            "DROP TABLE IF EXISTS $TABLE_PROVEEDOR"
+        )
+
+
+        db.execSQL(
+            "DROP TABLE IF EXISTS $TABLE_CLIENTE"
+        )
+
+
+        db.execSQL(
+            "DROP TABLE IF EXISTS $TABLE_USUARIO"
+        )
+
+
+        onCreate(db)
+
+    }
+
+}

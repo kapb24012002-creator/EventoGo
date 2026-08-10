@@ -1,0 +1,209 @@
+package ec.edu.istg.gestioneventos.dao
+
+import android.content.ContentValues
+import android.content.Context
+import ec.edu.istg.gestioneventos.database.DBHelper
+import ec.edu.istg.gestioneventos.model.EventoProveedor
+
+
+class EventoProveedorDAO(context: Context) {
+
+
+    private val dbHelper = DBHelper(context)
+
+
+
+    // ==========================
+    // ASIGNAR PROVEEDOR A EVENTO
+    // ==========================
+
+    fun insertar(eventoProveedor: EventoProveedor): Long {
+
+
+        val db = dbHelper.writableDatabase
+
+
+        val values = ContentValues().apply {
+
+
+            put(
+                DBHelper.COL_EP_EVENTO,
+                eventoProveedor.idEvento
+            )
+
+
+            put(
+                DBHelper.COL_EP_PROVEEDOR,
+                eventoProveedor.idProveedor
+            )
+
+        }
+
+
+        val resultado = db.insert(
+            DBHelper.TABLE_EVENTO_PROVEEDOR,
+            null,
+            values
+        )
+
+
+        db.close()
+
+
+        return resultado
+    }
+
+
+
+
+
+    // ==========================
+    // OBTENER PROVEEDORES DE UN EVENTO
+    // ==========================
+
+    fun obtenerPorEvento(idEvento: Int): MutableList<EventoProveedor> {
+
+
+        val lista = mutableListOf<EventoProveedor>()
+
+
+        val db = dbHelper.readableDatabase
+
+
+        val cursor = db.rawQuery(
+
+            """
+            SELECT *
+            FROM ${DBHelper.TABLE_EVENTO_PROVEEDOR}
+            WHERE ${DBHelper.COL_EP_EVENTO}=?
+            """,
+
+            arrayOf(idEvento.toString())
+
+        )
+
+
+
+        if(cursor.moveToFirst()) {
+
+
+            do {
+
+
+                val eventoProveedor = EventoProveedor(
+
+                    idEventoProveedor = cursor.getInt(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_ID_EVENTO_PROVEEDOR
+                        )
+                    ),
+
+
+                    idEvento = cursor.getInt(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_EP_EVENTO
+                        )
+                    ),
+
+
+                    idProveedor = cursor.getInt(
+                        cursor.getColumnIndexOrThrow(
+                            DBHelper.COL_EP_PROVEEDOR
+                        )
+                    )
+
+                )
+
+
+                lista.add(eventoProveedor)
+
+
+            } while(cursor.moveToNext())
+
+        }
+
+
+        cursor.close()
+
+        db.close()
+
+
+        return lista
+    }
+
+
+
+
+
+    // ==========================
+    // ELIMINAR PROVEEDOR DE EVENTO
+    // ==========================
+
+    fun eliminar(
+        idEvento: Int,
+        idProveedor: Int
+    ): Int {
+
+
+        val db = dbHelper.writableDatabase
+
+
+        val resultado = db.delete(
+
+            DBHelper.TABLE_EVENTO_PROVEEDOR,
+
+            """
+            ${DBHelper.COL_EP_EVENTO}=?
+            AND
+            ${DBHelper.COL_EP_PROVEEDOR}=?
+            """.trimIndent(),
+
+            arrayOf(
+                idEvento.toString(),
+                idProveedor.toString()
+            )
+
+        )
+
+
+        db.close()
+
+
+        return resultado
+    }
+
+
+
+
+
+    // ==========================
+    // ELIMINAR TODOS LOS PROVEEDORES
+    // DE UN EVENTO
+    // ==========================
+
+    fun eliminarTodosDelEvento(
+        idEvento: Int
+    ): Int {
+
+
+        val db = dbHelper.writableDatabase
+
+
+        val resultado = db.delete(
+
+            DBHelper.TABLE_EVENTO_PROVEEDOR,
+
+            "${DBHelper.COL_EP_EVENTO}=?",
+
+            arrayOf(idEvento.toString())
+
+        )
+
+
+        db.close()
+
+
+        return resultado
+    }
+
+}

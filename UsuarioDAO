@@ -1,0 +1,206 @@
+package ec.edu.istg.gestioneventos.dao
+
+import android.content.ContentValues
+import android.content.Context
+import android.database.Cursor
+import ec.edu.istg.gestioneventos.database.DBHelper
+import ec.edu.istg.gestioneventos.model.Usuario
+
+class UsuarioDAO(context: Context) {
+
+    private val dbHelper = DBHelper(context)
+
+    // Insertar usuario
+    fun insertar(usuario: Usuario): Long {
+
+        val db = dbHelper.writableDatabase
+
+        val values = ContentValues().apply {
+            put(DBHelper.COL_NOMBRES, usuario.nombres)
+            put(DBHelper.COL_CORREO, usuario.correo)
+            put(DBHelper.COL_PASSWORD, usuario.password)
+            put(DBHelper.COL_TELEFONO, usuario.telefono)
+            put(DBHelper.COL_FECHA_REGISTRO, usuario.fechaRegistro)
+        }
+
+        val resultado = db.insert(DBHelper.TABLE_USUARIO, null, values)
+
+        db.close()
+
+        return resultado
+    }
+
+    // Obtener todos los usuarios
+    fun obtenerTodos(): MutableList<Usuario> {
+
+        val lista = mutableListOf<Usuario>()
+
+        val db = dbHelper.readableDatabase
+
+        val cursor: Cursor = db.rawQuery(
+            "SELECT * FROM ${DBHelper.TABLE_USUARIO}",
+            null
+        )
+
+        if (cursor.moveToFirst()) {
+
+            do {
+
+                val usuario = Usuario(
+                    idUsuario = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COL_ID_USUARIO)),
+                    nombres = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_NOMBRES)),
+                    correo = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_CORREO)),
+                    password = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_PASSWORD)),
+                    telefono = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_TELEFONO)),
+                    fechaRegistro = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_FECHA_REGISTRO))
+                )
+
+                lista.add(usuario)
+
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+
+        return lista
+    }
+
+    // Obtener usuario por ID
+    fun obtenerPorId(id: Int): Usuario? {
+
+        val db = dbHelper.readableDatabase
+
+        val cursor = db.rawQuery(
+            "SELECT * FROM ${DBHelper.TABLE_USUARIO} WHERE ${DBHelper.COL_ID_USUARIO} = ?",
+            arrayOf(id.toString())
+        )
+
+        var usuario: Usuario? = null
+
+        if (cursor.moveToFirst()) {
+
+            usuario = Usuario(
+                idUsuario = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COL_ID_USUARIO)),
+                nombres = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_NOMBRES)),
+                correo = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_CORREO)),
+                password = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_PASSWORD)),
+                telefono = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_TELEFONO)),
+                fechaRegistro = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_FECHA_REGISTRO))
+            )
+        }
+
+        cursor.close()
+        db.close()
+
+        return usuario
+    }
+
+    // Actualizar usuario
+    fun actualizar(usuario: Usuario): Int {
+
+        val db = dbHelper.writableDatabase
+
+        val values = ContentValues().apply {
+
+            put(DBHelper.COL_NOMBRES, usuario.nombres)
+            put(DBHelper.COL_CORREO, usuario.correo)
+            put(DBHelper.COL_PASSWORD, usuario.password)
+            put(DBHelper.COL_TELEFONO, usuario.telefono)
+            put(DBHelper.COL_FECHA_REGISTRO, usuario.fechaRegistro)
+
+        }
+
+        val resultado = db.update(
+            DBHelper.TABLE_USUARIO,
+            values,
+            "${DBHelper.COL_ID_USUARIO}=?",
+            arrayOf(usuario.idUsuario.toString())
+        )
+
+        db.close()
+
+        return resultado
+    }
+
+    // Eliminar usuario
+    fun eliminar(id: Int): Int {
+
+        val db = dbHelper.writableDatabase
+
+        val resultado = db.delete(
+            DBHelper.TABLE_USUARIO,
+            "${DBHelper.COL_ID_USUARIO}=?",
+            arrayOf(id.toString())
+        )
+
+        db.close()
+
+        return resultado
+    }
+
+    // Buscar usuario por correo
+    fun buscarPorCorreo(correo: String): Usuario? {
+
+        val db = dbHelper.readableDatabase
+
+        val cursor = db.rawQuery(
+            "SELECT * FROM ${DBHelper.TABLE_USUARIO} WHERE ${DBHelper.COL_CORREO} = ?",
+            arrayOf(correo)
+        )
+
+        var usuario: Usuario? = null
+
+        if (cursor.moveToFirst()) {
+
+            usuario = Usuario(
+                idUsuario = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COL_ID_USUARIO)),
+                nombres = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_NOMBRES)),
+                correo = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_CORREO)),
+                password = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_PASSWORD)),
+                telefono = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_TELEFONO)),
+                fechaRegistro = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_FECHA_REGISTRO))
+            )
+        }
+
+        cursor.close()
+        db.close()
+
+        return usuario
+    }
+
+    // Validar Login
+    fun login(correo: String, password: String): Usuario? {
+
+        val db = dbHelper.readableDatabase
+
+        val cursor = db.rawQuery(
+            """
+            SELECT *
+            FROM ${DBHelper.TABLE_USUARIO}
+            WHERE ${DBHelper.COL_CORREO}=?
+            AND ${DBHelper.COL_PASSWORD}=?
+            """.trimIndent(),
+            arrayOf(correo, password)
+        )
+
+        var usuario: Usuario? = null
+
+        if (cursor.moveToFirst()) {
+
+            usuario = Usuario(
+                idUsuario = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COL_ID_USUARIO)),
+                nombres = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_NOMBRES)),
+                correo = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_CORREO)),
+                password = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_PASSWORD)),
+                telefono = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_TELEFONO)),
+                fechaRegistro = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_FECHA_REGISTRO))
+            )
+        }
+
+        cursor.close()
+        db.close()
+
+        return usuario
+    }
+}

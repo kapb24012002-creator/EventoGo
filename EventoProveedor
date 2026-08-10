@@ -1,0 +1,11 @@
+package ec.edu.istg.gestioneventos.model
+
+data class EventoProveedor(
+
+    var idEventoProveedor: Int = 0,
+
+    var idEvento: Int,
+
+    var idProveedor: Int
+
+)

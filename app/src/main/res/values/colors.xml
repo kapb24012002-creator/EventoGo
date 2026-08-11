@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Paleta de colores según el diseño -->
+    <color name="primary_dark">#1A3B5D</color> <!-- Azul marino cabeceras -->
+    <color name="primary_blue">#3182CE</color> <!-- Azul botones -->
+    <color name="background_light">#F5F7FA</color> <!-- Fondo grisáceo claro -->
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray_text">#718096</color>
+
+    <!-- Estados -->
+    <color name="success_bg">#E6FFFA</color>
+    <color name="success_text">#2C7A7B</color>
+    <color name="warning_bg">#FFFAF0</color>
+    <color name="warning_text">#DD6B20</color>
+    <color name="danger_bg">#FFF5F5</color>
+    <color name="danger_red">#E53E3E</color>
+</resources>

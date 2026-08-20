@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <color name="background_light">@color/dark_deep</color>
+    <color name="black">#000000</color>
+    <color name="danger_bg">#33FF4B2B</color>
+    <color name="danger_red">#FF4B2B</color>
+    <color name="dark_background">@color/dark_surface</color>
+    <color name="dark_deep">#0F0C29</color>
+    <color name="dark_surface">#1E1E2C</color>
+    <color name="glass_border">#4DFFFFFF</color>
+    <color name="glass_white">#26FFFFFF</color>
+    <color name="gray_text">#B0BEC5</color>
+    <color name="primary_blue">#0052D4</color>
+    <color name="primary_dark">@color/dark_surface</color>
+    <color name="primary_magenta">#FF007F</color>
+    <color name="silver_light">@color/dark_deep</color>
+    <color name="silver_medium">@color/glass_white</color>
+    <color name="silver_text">#B0BEC5</color>
+    <color name="status_bar_purple">#4A00E0</color>
+    <color name="success_bg">#3300F2FE</color>
+    <color name="success_text">#00F2FE</color>
+    <color name="warning_bg">#33FFC107</color>
+    <color name="warning_text">#FFC107</color>
+    <color name="white">#FFFFFF</color>
+    <string name="app_name">EventoGo</string>
+    <string name="navigation_drawer_close">Cerrar menú de navegación</string>
+    <string name="navigation_drawer_open">Abrir menú de navegación</string>
+    <style name="CircleImage" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="CustomCalendar" parent="Theme.AppCompat">
+        <item name="colorAccent">@color/primary_magenta</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/silver_text</item>
+        <item name="android:selectedWeekBackgroundColor">#33FF007F</item>
+        <item name="android:focusedMonthDateColor">@color/white</item>
+        <item name="android:unfocusedMonthDateColor">@color/silver_text</item>
+    </style>
+    <style name="Theme.EventoGo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        
+        <item name="colorPrimary">@color/status_bar_purple</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        
+        <item name="colorSecondary">@color/primary_magenta</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        
+        <item name="android:windowBackground">@color/dark_deep</item>
+        <item name="statusBarBackground">@color/status_bar_purple</item>
+        <item name="android:windowLightStatusBar" ns1:targetApi="m">false</item>
+    </style>
+    <style name="Theme.EventoGo.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="Theme.EventoGo.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+</resources>

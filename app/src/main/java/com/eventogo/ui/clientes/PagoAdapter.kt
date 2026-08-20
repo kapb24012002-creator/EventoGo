@@ -40,6 +40,22 @@ class PagoAdapter(private var pagos: MutableList<Pago>) :
         holder.txtMonto.text = "$ ${String.format("%.2f", pago.monto)}"
         holder.txtFecha.text = pago.fechaPago
         holder.txtEstado.text = "Estado: ${pago.estadoPago}"
+
+        // Estilo dinámico para pagos
+        when (pago.estadoPago) {
+            "Completado" -> {
+                holder.txtEstado.setBackgroundResource(R.drawable.bg_tag_success)
+                holder.txtEstado.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.context, R.color.success_text))
+            }
+            "Cancelado" -> {
+                holder.txtEstado.setBackgroundResource(R.drawable.bg_tag_danger)
+                holder.txtEstado.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.context, R.color.danger_red))
+            }
+            else -> { // Pendiente
+                holder.txtEstado.setBackgroundResource(R.drawable.bg_tag_servicio)
+                holder.txtEstado.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.context, R.color.gray_text))
+            }
+        }
         
         holder.itemView.setOnClickListener {
             val intent = Intent(holder.itemView.context, RegistroPagoActivity::class.java)

@@ -34,6 +34,26 @@ class EventoAdapter(private var eventos: MutableList<Evento>) :
         holder.txtFecha.text = evento.fecha
         holder.txtHora.text = evento.hora
         holder.txtEstado.text = "Estado: ${evento.estado}"
+
+        // Estilo dinámico según el estado
+        when (evento.estado) {
+            "Atrasado" -> {
+                holder.txtEstado.setBackgroundResource(R.drawable.bg_tag_danger)
+                holder.txtEstado.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.context, R.color.danger_red))
+            }
+            "Finalizado" -> {
+                holder.txtEstado.setBackgroundResource(R.drawable.bg_tag_success)
+                holder.txtEstado.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.context, R.color.success_text))
+            }
+            "En Progreso" -> {
+                holder.txtEstado.setBackgroundResource(R.drawable.bg_tag_servicio)
+                holder.txtEstado.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.context, R.color.primary_magenta))
+            }
+            else -> { // Pendiente
+                holder.txtEstado.setBackgroundResource(R.drawable.bg_tag_servicio)
+                holder.txtEstado.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.context, R.color.gray_text))
+            }
+        }
         
         holder.itemView.setOnClickListener {
             val intent = Intent(holder.itemView.context, RegistroEventoActivity::class.java)

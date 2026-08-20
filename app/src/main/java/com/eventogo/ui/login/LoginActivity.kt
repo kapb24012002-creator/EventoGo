@@ -35,6 +35,10 @@ class LoginActivity : AppCompatActivity() {
             } else {
                 val usuario = usuarioDAO.login(correo, pass)
                 if (usuario != null) {
+                    // Guardar sesión
+                    val prefs = getSharedPreferences("sesion_usuario", android.content.Context.MODE_PRIVATE)
+                    prefs.edit().putInt("id_usuario", usuario.idUsuario).apply()
+
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()

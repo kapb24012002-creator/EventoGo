@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light">
+    android:background="@drawable/bg_main_gradient">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary_dark"
+            android:background="@color/glass_white"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Directorio y perfiles registrados"
-                android:textColor="#B0C4DE"
+                android:textColor="@color/silver_text"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -45,12 +45,15 @@
                 android:id="@+id/edtBuscarCliente"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="@drawable/bg_search_bar"
+                android:background="@drawable/bg_glass_card"
                 android:drawableStart="@android:drawable/ic_menu_search"
                 android:drawablePadding="8dp"
+                android:drawableTint="@color/white"
                 android:hint="Buscar cliente por nombre o correo..."
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/silver_text"
                 android:textSize="14sp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -69,7 +72,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="24dp"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/primary_blue"
-        app:tint="@color/white" />
+        app:backgroundTint="@color/primary_magenta"
+        app:tint="@color/white"
+        app:elevation="8dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

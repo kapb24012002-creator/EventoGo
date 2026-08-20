@@ -3,6 +3,7 @@ package com.eventogo.ui.clientes
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.eventogo.R
@@ -33,19 +34,25 @@ class RegistroEventoActivity : AppCompatActivity() {
         val edtLugar: EditText = findViewById(R.id.edtLugarEvento)
         val edtCategoria: EditText = findViewById(R.id.edtCategoriaEvento)
         val edtDesc: EditText = findViewById(R.id.edtDescripcionEvento)
+        val spnEstado: Spinner = findViewById(R.id.spnEstadoEvento)
         val btnGuardar: Button = findViewById(R.id.btnGuardarEvento)
         val btnEliminar: Button = findViewById(R.id.btnEliminarEvento)
 
         // Load clients into spinner
         listaClientes = clienteDAO.obtenerTodos()
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, listaClientes.map { it.nombre })
-        spnCliente.adapter = adapter
+        val adapterCli = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, listaClientes.map { it.nombre })
+        spnCliente.adapter = adapterCli
+
+        // Load status
+        val estados = arrayOf("Pendiente", "En Progreso", "Finalizado", "Atrasado")
+        val adapterEst = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, estados)
+        spnEstado.adapter = adapterEst
 
         // Date Picker
         edtFecha.setOnClickListener {
             val c = Calendar.getInstance()
             DatePickerDialog(this, { _, year, month, day ->
-                edtFecha.setText("$year-${month + 1}-$day")
+                edtFecha.setText(String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, day))
             }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show()
         }
 
@@ -53,7 +60,7 @@ class RegistroEventoActivity : AppCompatActivity() {
         edtHora.setOnClickListener {
             val c = Calendar.getInstance()
             TimePickerDialog(this, { _, hour, minute ->
-                edtHora.setText(String.format("%02d:%02d", hour, minute))
+                edtHora.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute))
             }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show()
         }
 
@@ -62,7 +69,7 @@ class RegistroEventoActivity : AppCompatActivity() {
         if (idEvento != -1) {
             findViewById<TextView>(R.id.txtTituloRegistroEvento).text = "Editar Evento"
             btnGuardar.text = "ACTUALIZAR"
-            btnEliminar.visibility = android.view.View.VISIBLE
+            btnEliminar.visibility = View.VISIBLE
             edtTitulo.setText(intent.getStringExtra("TITULO"))
             edtFecha.setText(intent.getStringExtra("FECHA"))
             edtHora.setText(intent.getStringExtra("HORA"))
@@ -73,6 +80,10 @@ class RegistroEventoActivity : AppCompatActivity() {
             val clienteId = intent.getIntExtra("ID_CLIENTE", -1)
             val clienteIdx = listaClientes.indexOfFirst { it.idCliente == clienteId }
             if (clienteIdx != -1) spnCliente.setSelection(clienteIdx)
+
+            val estadoStr = intent.getStringExtra("ESTADO") ?: "Pendiente"
+            val estadoIdx = estados.indexOf(estadoStr)
+            if (estadoIdx != -1) spnEstado.setSelection(estadoIdx)
         }
 
         btnEliminar.setOnClickListener {
@@ -96,6 +107,7 @@ class RegistroEventoActivity : AppCompatActivity() {
             val lugar = edtLugar.text.toString()
             val cat = edtCategoria.text.toString()
             val desc = edtDesc.text.toString()
+            val estado = spnEstado.selectedItem.toString()
             
             if (titulo.isEmpty() || listaClientes.isEmpty()) {
                 Toast.makeText(this, "Título y Cliente son obligatorios", Toast.LENGTH_SHORT).show()
@@ -114,7 +126,7 @@ class RegistroEventoActivity : AppCompatActivity() {
                 hora = hora,
                 lugar = lugar,
                 categoria = cat,
-                estado = intent.getStringExtra("ESTADO") ?: "Pendiente"
+                estado = estado
             )
 
             val res = if (idEvento == -1) {
@@ -124,6 +136,15 @@ class RegistroEventoActivity : AppCompatActivity() {
             }
 
             if (res != -1) {
+                // Programar recordatorio si es pendiente
+                if (estado == "Pendiente" || estado == "En Progreso") {
+                    com.eventogo.util.ReminderHelper.scheduleReminder(
+                        this,
+                        fecha,
+                        "Evento: $titulo",
+                        "Hoy tienes el evento '$titulo' en $lugar a las $hora."
+                    )
+                }
                 Toast.makeText(this, "Éxito", Toast.LENGTH_SHORT).show()
                 finish()
             } else {

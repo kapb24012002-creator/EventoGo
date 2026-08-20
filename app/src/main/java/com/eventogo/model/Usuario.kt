@@ -6,5 +6,6 @@ data class Usuario(
     var correo: String,
     var password: String,
     var telefono: String,
-    var fechaRegistro: String
+    var fechaRegistro: String,
+    var foto: String? = null
 )

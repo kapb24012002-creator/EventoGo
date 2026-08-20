@@ -4,8 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/glass_white"
+    app:strokeColor="@color/glass_border"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nombre del Proveedor"
-            android:textColor="@color/primary_dark"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -29,8 +32,9 @@
             android:layout_marginTop="4dp"
             android:drawableStart="@android:drawable/ic_menu_call"
             android:drawablePadding="8dp"
+            android:drawableTint="@color/white"
             android:text="099112233"
-            android:textColor="@color/gray_text"
+            android:textColor="@color/silver_text"
             android:textSize="14sp" />
 
         <TextView

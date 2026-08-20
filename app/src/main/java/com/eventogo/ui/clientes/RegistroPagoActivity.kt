@@ -112,6 +112,15 @@ class RegistroPagoActivity : AppCompatActivity() {
             }
 
             if (res != -1) {
+                // Programar recordatorio si está pendiente
+                if (estado == "Pendiente") {
+                    com.eventogo.util.ReminderHelper.scheduleReminder(
+                        this,
+                        fecha,
+                        "Pago Pendiente",
+                        "Recuerda cobrar/pagar el monto de $ $montoStr hoy."
+                    )
+                }
                 Toast.makeText(this, "Éxito", Toast.LENGTH_SHORT).show()
                 finish()
             } else {

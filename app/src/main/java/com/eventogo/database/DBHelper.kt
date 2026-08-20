@@ -13,7 +13,7 @@ class DBHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         const val DATABASE_NAME = "evento_go.db"
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
 
         const val TABLE_USUARIO = "Usuario"
         const val COL_ID_USUARIO = "idUsuario"
@@ -22,6 +22,7 @@ class DBHelper(context: Context) : SQLiteOpenHelper(
         const val COL_PASSWORD = "password"
         const val COL_TELEFONO = "telefono"
         const val COL_FECHA_REGISTRO = "fechaRegistro"
+        const val COL_FOTO_USUARIO = "foto"
 
         const val TABLE_CLIENTE = "Cliente"
         const val COL_ID_CLIENTE = "idCliente"
@@ -76,7 +77,8 @@ class DBHelper(context: Context) : SQLiteOpenHelper(
                 $COL_CORREO TEXT NOT NULL UNIQUE,
                 $COL_PASSWORD TEXT NOT NULL,
                 $COL_TELEFONO TEXT,
-                $COL_FECHA_REGISTRO TEXT DEFAULT(datetime('now','localtime'))
+                $COL_FECHA_REGISTRO TEXT DEFAULT(datetime('now','localtime')),
+                $COL_FOTO_USUARIO TEXT
             )
         """.trimIndent())
 

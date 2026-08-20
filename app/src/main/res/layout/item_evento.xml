@@ -4,8 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/glass_white"
+    app:strokeColor="@color/glass_border"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lanzamiento de Producto"
-            android:textColor="@color/primary_dark"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -34,7 +37,9 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@android:drawable/ic_menu_today"
                 android:drawablePadding="4dp"
+                android:drawableTint="@color/white"
                 android:text="2026-12-01"
+                android:textColor="@color/silver_text"
                 android:textSize="12sp" />
 
             <TextView
@@ -44,7 +49,9 @@
                 android:layout_marginStart="16dp"
                 android:drawableStart="@android:drawable/ic_menu_recent_history"
                 android:drawablePadding="4dp"
+                android:drawableTint="@color/white"
                 android:text="10:00"
+                android:textColor="@color/silver_text"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -59,7 +66,7 @@
             android:paddingEnd="12dp"
             android:paddingBottom="4dp"
             android:text="Estado: Pendiente"
-            android:textColor="@color/primary_blue"
+            android:textColor="@color/primary_magenta"
             android:textSize="11sp"
             android:textStyle="bold" />
 

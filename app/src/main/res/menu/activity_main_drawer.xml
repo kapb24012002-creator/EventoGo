@@ -9,6 +9,10 @@
             android:icon="@android:drawable/ic_menu_today"
             android:title="Dashboard" />
         <item
+            android:id="@+id/nav_perfil"
+            android:icon="@android:drawable/ic_menu_edit"
+            android:title="Mi Perfil" />
+        <item
             android:id="@+id/nav_clientes"
             android:icon="@android:drawable/ic_menu_myplaces"
             android:title="Clientes" />

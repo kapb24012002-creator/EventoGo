@@ -1,10 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.EventoGo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/primary_blue</item>
-        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <!-- Colores Principales -->
+        <item name="colorPrimary">@color/status_bar_purple</item>
+        <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="android:windowBackground">@color/background_light</item>
-        <item name="statusBarBackground">@color/primary_dark</item>
+
+        <!-- Acentos -->
+        <item name="colorSecondary">@color/primary_magenta</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Fondos y Superficies -->
+        <item name="android:windowBackground">@color/dark_deep</item>
+        <item name="statusBarBackground">@color/status_bar_purple</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
     </style>
 
     <style name="Theme.EventoGo.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -12,5 +20,14 @@
 
     <style name="CircleImage" parent="">
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="CustomCalendar" parent="Theme.AppCompat">
+        <item name="colorAccent">@color/primary_magenta</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/silver_text</item>
+        <item name="android:selectedWeekBackgroundColor">#33FF007F</item>
+        <item name="android:focusedMonthDateColor">@color/white</item>
+        <item name="android:unfocusedMonthDateColor">@color/silver_text</item>
     </style>
 </resources>

@@ -35,11 +35,42 @@ class UsuarioDAO(context: Context) {
                 correo = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_CORREO)),
                 password = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_PASSWORD)),
                 telefono = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_TELEFONO)) ?: "",
-                fechaRegistro = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_FECHA_REGISTRO))
+                fechaRegistro = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_FECHA_REGISTRO)),
+                foto = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_FOTO_USUARIO))
             )
         }
         cursor.close()
         db.close()
         return usuario
+    }
+
+    fun obtenerUsuarioPorId(id: Int): Usuario? {
+        val db = dbHelper.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM ${DBHelper.TABLE_USUARIO} WHERE ${DBHelper.COL_ID_USUARIO} = ?", arrayOf(id.toString()))
+        var usuario: Usuario? = null
+        if (cursor.moveToFirst()) {
+            usuario = Usuario(
+                idUsuario = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.COL_ID_USUARIO)),
+                nombres = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_NOMBRES)),
+                correo = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_CORREO)),
+                password = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_PASSWORD)),
+                telefono = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_TELEFONO)) ?: "",
+                fechaRegistro = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_FECHA_REGISTRO)),
+                foto = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.COL_FOTO_USUARIO))
+            )
+        }
+        cursor.close()
+        db.close()
+        return usuario
+    }
+
+    fun actualizarFoto(id: Int, path: String): Int {
+        val db = dbHelper.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put(DBHelper.COL_FOTO_USUARIO, path)
+        }
+        val res = db.update(DBHelper.TABLE_USUARIO, values, "${DBHelper.COL_ID_USUARIO}=?", arrayOf(id.toString()))
+        db.close()
+        return res
     }
 }
